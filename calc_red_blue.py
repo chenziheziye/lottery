@@ -36,10 +36,4 @@ for line in f:
 
 print "温馨提示：恭喜您！所选号码与历史中大奖的号码未发生重合！"
 
-
-def calc_num_ratio():
-    for line in f:
-        curList = line.split()
-
-
 f.close()
