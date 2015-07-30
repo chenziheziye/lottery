@@ -1,16 +1,18 @@
+import os
 import re
 import numpy as np
 
 path = '/Users/chenziheziye/PycharmProjects/test/ssq.txt'
 
-#custom array type
-type_key = map(str, range(1,11))
-t = [(type_key[i], np.str_, 10) for i in range(1,3)] + [(type_key[i], int) for i in range(3,10)]
-hist_array = ['00']*3 + [0]*7
+hist_array = []
+num_time_array = []
 red_cold_dict = dict.fromkeys(range(1,34), 0)
 blue_cold_dict = dict.fromkeys(range(1,17), 0)
 
 with open(path, 'rt') as f:
+
+    hl = []
+    nl = []
     for line in f:
         raw_val = re.split(r'[,\s\\]', line.rstrip())
 
@@ -21,24 +23,35 @@ with open(path, 'rt') as f:
         #transform str to int
         raw_val[3:11] = map(int, raw_val[3:11])
 
-        for i in range(1,34):
-            if i in raw_val[3:10]:
-                red_cold_dict[i] = 0
-            else:
-                red_cold_dict[i] += 1
+        hl.append(raw_val[3:11])
+        nl.append(raw_val[0:3])
+f.close()
 
-        #print raw_val
-        nd_array = np.vstack((hist_array, raw_val))
-        hist_array = nd_array
+hist_array = np.array(hl)
+num_time_array = np.array(nl)
+hist_array.shape = (len(hl), 7)
+num_time_array.shape = (len(hl), 3)
 
-for line in hist_array[::-1]:
-    print line
+
+for line in hist_array[::-1, 0:6]:
+
+    for i in red_cold_dict:
+        red_cold_dict[i] += 1
+    for tag in line:
+        red_cold_dict[tag] = 0
+
+for tag in hist_array[::-1, -1]:
+
+    for i in blue_cold_dict:
+        blue_cold_dict[i] += 1
+    blue_cold_dict[tag] = 0
+
 
 print red_cold_dict
 print blue_cold_dict
 
 
-f.close()
+
 
 
 
